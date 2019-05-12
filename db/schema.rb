@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,10 +11,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_30_084849) do
+ActiveRecord::Schema.define(version: 2019_05_07_173313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "carts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.string "kind", null: false
+    t.string "name", null: false
+    t.integer "product_ids", default: [], null: false, array: true
+    t.float "price", default: 0.0
+    t.integer "count", default: 0
+    t.bigint "cart_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id"], name: "index_discounts_on_cart_id"
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.integer "quantity", default: 1
+    t.bigint "product_id"
+    t.bigint "cart_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id"], name: "index_items_on_cart_id"
+    t.index ["product_id"], name: "index_items_on_product_id"
+  end
 
   create_table "products", force: :cascade do |t|
     t.string "name"
@@ -23,4 +51,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_084849) do
     t.index ["name"], name: "index_products_on_name", unique: true
   end
 
+  add_foreign_key "discounts", "carts"
+  add_foreign_key "items", "carts"
+  add_foreign_key "items", "products"
 end
