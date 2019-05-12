@@ -28,3 +28,6 @@ module GrillMaster
     config.api_only = true
   end
 end
+
+# JSON API format with Serializer
+#ActiveModelSerializers.config.adapter = :json_api
