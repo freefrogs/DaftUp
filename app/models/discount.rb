@@ -12,38 +12,48 @@ class Discount < ApplicationRecord
                                     greater_than_or_equal_to: 0 }
 
   validate :can_be_add?
-  validate :is_set_ok?
-  validate :is_extra_ok?
+  validate :set_ok?
+  validate :extra_ok?
 
   private
 
   def can_be_add?
     ids = Product.all.map { |e| e[:id] }
-    added_ids = self.product_ids.uniq
+    added_ids = product_ids.uniq
 
-    if added_ids.all? { |e| ids.include?(e) } == false
-      errors.add( :product_ids, :invalid, message: "Non-existent product id on the list" )
-    end
+    errors.add(:product_ids,
+               :invalid, 
+               message: 'Non-existent product id on the list') if added_ids.all? { |e| ids.include?(e) } == false
   end
 
-  def is_set_ok?
-    if self.kind == "set"
-      if self.product_ids.size < 2 
-        errors.add( :product_ids, :invalid, message: "Set should have at least 2 products" )
-      elsif self.count != 0
-        errors.add( :count, :invalid, message: "When set count should be equal 0" )
-      elsif self.price == 0
-        errors.add( :price, :invalid, message: "Price should be greater then 0" )
+  def set_ok?
+    if kind == 'set'
+      if product_ids.size < 2
+        errors.add(:product_ids,
+                   :invalid,
+                   message: 'Set should have at least 2 products')
+      elsif count != 0
+        errors.add(:count,
+                   :invalid,
+                   message: 'When set count should be equal 0')
+      elsif price == 0
+        errors.add(:price,
+                   :invalid,
+                   message: 'Price should be greater then 0')
       end
     end
   end
 
-  def is_extra_ok?
-    if self.kind == "extra"
-      if self.price != 0
-        errors.add( :price, :invalid, message: "When extra price should be equal 0" )
-      elsif self.count == 0
-        errors.add( :count, :invalid, message: "Count should be greater then 0" )
+  def extra_ok?
+    if kind == 'extra'
+      if price != 0
+        errors.add(:price,
+                   :invalid,
+                   message: 'When extra price should be equal 0')
+      elsif count == 0
+        errors.add(:count,
+                   :invalid,
+                   message: 'Count should be greater then 0')
       end
     end
   end

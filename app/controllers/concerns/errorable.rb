@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Errorable
   extend ActiveSupport::Concern
 
@@ -7,11 +9,11 @@ module Errorable
   end
 
   def render_validation_error(exception)
-  	render json: exception.record.errors, status: 422
+    render json: exception.record.errors, status: 422
   end
 
   def render_not_found_error(exception)
-  	render json: { errors: exception.message }, status: 404
+    render json: { errors: exception.message }, status: 404
   end
 end
 

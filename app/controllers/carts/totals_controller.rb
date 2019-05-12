@@ -2,13 +2,12 @@
 
 module Carts
   class TotalsController < ApplicationController
-
     def show
       render json: summary.to_json
     end
 
     private
-  
+
     def cart
       Cart.find(1)
     end
@@ -30,34 +29,34 @@ module Carts
     end
 
     def final_price
-      ids = product_list.map { |e| Array.new(e.quantity,e.product_id) }.sum
+      ids = product_list.map { |e| Array.new(e.quantity, e.product_id) }.sum
 
       total_price = discounts.map { |e|
 
-        if e.kind == "set"
+        if e.kind == 'set'
 
           ids_list = ids
-          common_part = (e.product_ids & ids_list).flat_map { |n| [n]*[e.product_ids.count(n), ids_list.count(n)].min }
+          common_part = (e.product_ids & ids_list).flat_map { |n| [n] * [e.product_ids.count(n), ids_list.count(n)].min }
 
           if e.product_ids.length == common_part.length
             e.product_ids.map { |n| ids_list.delete_at(ids_list.index(n)) }
             ids = ids_list
             e.price
           end
-        
+
         else
           count = e.count + 1
-          extra_ids = e.product_ids.map { |n| Array.new(count,n) }
+          extra_ids = e.product_ids.map { |n| Array.new(count, n) }
 
           extra_ids.map { |arr|
 
             ids_list = ids
-            common_part = ids_list.each_with_object(arr.dup).map{|v,t| v if (l = t.index v) && t.slice!(l) }.compact
+            common_part = ids_list.each_with_object(arr.dup).map{ |v, t| v if (l = t.index v) && t.slice!(l) }.compact
 
             if arr.length == common_part.length
               arr.map { |n| ids_list.delete_at(ids_list.index(n)) }
               ids = ids_list
-              extra_price = products.find(arr.uniq)[0][:price] * e.count
+              products.find(arr.uniq)[0][:price] * e.count
             end
           }
         end
@@ -73,7 +72,7 @@ module Carts
         "your dicounts": discounts,
         "regular price": regular_price,
         "final price": final_price
-      }      
+      }
     end
 
   end

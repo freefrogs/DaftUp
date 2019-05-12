@@ -6,5 +6,5 @@ class Item < ApplicationRecord
 
   validates :product_id, presence: true
   validates :quantity, numericality: { only_integer: true,
-  	                                   greater_than_or_equal_to: 0 }
+                                       greater_than_or_equal_to: 0 }
 end
